@@ -9,7 +9,7 @@ __maintainer__ = "pimylifeup.com"
 GPIO.setmode(GPIO.BOARD)
 
 # define the pin that goes to the circuit
-pin_to_circuit = 7
+pin_to_circuit = 16
 
 # datbase to store the date in
 res = []
@@ -21,7 +21,7 @@ def rc_time(pin_to_circuit):
     # Output on the pin for
     GPIO.setup(pin_to_circuit, GPIO.OUT)
     GPIO.output(pin_to_circuit, GPIO.LOW)
-    precision = 100
+    precision = 0.01
     time.sleep(precision)
 
     # Change the pin back to input
