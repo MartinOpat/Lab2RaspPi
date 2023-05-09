@@ -7,3 +7,4 @@ and [Official GPIO Zero Documentation](https://gpiozero.readthedocs.io/en/stable
 `light_sensor_integer.py` code is based on [Pi My Life Up](https://github.com/pimylifeup/Light_Sensor)
 
 ## SenseHat coed
+Code based on [astropi](https://github.com/MartinOpat/astropi)

@@ -1,15 +1,5 @@
-from gpiozero import LightSensor, Buzzer
+from gpiozero import LightSensor
 
-ldr = LightSensor(4)  # alter if using a different pin
-res = []
 
-try:
-    while True:
-        val = ldr.value
-        print(val)
-        res.append(str(val))
-
-except KeyboardInterrupt:
-    f = open("test_run2.csv", "w")
-    f.write(",\n".join(res))
-    f.close()
+def capture_intensity(ldr: LightSensor):
+    return ldr.value
