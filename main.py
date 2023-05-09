@@ -28,15 +28,15 @@ logger.info(f'Logging to {csvfile}')
 
 while True:
 
-    # to display that working
-    pixel1 = random.choice(range(0, 7+1))
-    pixel2 = random.choice(range(0, 7+1))
-    r = random.choice(range(0, 255+1))
-    g = random.choice(range(0, 255+1))
-    b = random.choice(range(0, 255+1))
-    now = datetime.now(pixel1, pixel2, (r, g, b))
+    pixel1 = random.choice(range(0, 7 + 1))
+    pixel2 = random.choice(range(0, 7 + 1))
+    r = random.choice(range(0, 255 + 1))
+    g = random.choice(range(0, 255 + 1))
+    b = random.choice(range(0, 255 + 1))
+    sh.set_pixel(pixel1, pixel2, (r, g, b))
 
     # Check for end time
+    now = datetime.now()
     if now >= end_time:
         logger.info(f'Finished run at {now}')
         break
