@@ -7,7 +7,9 @@ def path_for(filename):
     return os.path.join(dir_path, filename)
 
 def path_for_data(number):
-    return path_for(f'data{number:02}.csv')
+    while os.path.exists(f'data/data{number:02}.csv'):
+        number += 1
+    return path_for(f'data/data{number:02}.csv')
 
 def create_csv_file(data_file, header):
     "Create a new CSV file and add the header row"
@@ -20,4 +22,3 @@ def add_csv_data(data_file, data):
     with open(data_file, 'a') as f:
         writer = csv.writer(f)
         writer.writerow(data)
-        
