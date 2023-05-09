@@ -27,15 +27,6 @@ csvfile = util.path_for_data(1)
 logger.info(f'Logging to {csvfile}')
 
 while True:
-
-    pixel1 = random.randint(0, 7)
-    pixel2 = random.randint(0, 7)
-    r = random.randint(0, 255)
-    g = random.randint(0, 255)
-    b = random.randint(0, 255)
-    sh.clear()
-    sh.set_pixel(pixel1, pixel2, (r, g, b))
-
     # Check for end time
     now = datetime.now()
     if now >= end_time:
@@ -44,7 +35,14 @@ while True:
 
     # Main loop
     try:
-        sh.set_pixel()  # to show that working
+        # to show that working
+        pixel1 = random.randint(0, 7)
+        pixel2 = random.randint(0, 7)
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        sh.clear()
+        sh.set_pixel(pixel1, pixel2, (r, g, b))
 
         orientation = sh.get_orientation_degrees()
         compass = sh.get_compass()
