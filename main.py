@@ -84,6 +84,9 @@ while True:
         print("Exited successfully!")
         sh.clear()
     except Exception as e:
+        sh.clear()
         logger.error('{}: {})'.format(e.__class__.__name__, e))
 
     sleep(config.SLEEPTIME)
+
+sh.clear()
