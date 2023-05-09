@@ -1,6 +1,7 @@
 import config
 import util
 import light_sensor
+import random
 
 from logzero import logger, logfile
 from sense_hat import SenseHat
@@ -26,14 +27,24 @@ csvfile = util.path_for_data(1)
 logger.info(f'Logging to {csvfile}')
 
 while True:
+
+    # to display that working
+    pixel1 = random.choice(range(0, 7+1))
+    pixel2 = random.choice(range(0, 7+1))
+    r = random.choice(range(0, 255+1))
+    g = random.choice(range(0, 255+1))
+    b = random.choice(range(0, 255+1))
+    now = datetime.now(pixel1, pixel2, (r, g, b))
+
     # Check for end time
-    now = datetime.now()
     if now >= end_time:
         logger.info(f'Finished run at {now}')
         break
 
     # Main loop
     try:
+        sh.set_pixel()  # to show that working
+
         orientation = sh.get_orientation_degrees()
         compass = sh.get_compass()
         compass_raw = sh.get_compass_raw()
