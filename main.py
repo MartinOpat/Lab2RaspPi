@@ -52,6 +52,9 @@ while True:
         accelerometer_raw = sh.get_accelerometer_raw()
         intensity = light_sensor.capture_intensity(ldr)
 
+        print(f'time={now}, intensity={intensity}, '
+              f'acc_x={accelerometer_raw["x"]}, acc_y={accelerometer_raw["y"]}, acc_z={accelerometer_raw["z"]}')
+
         util.add_csv_data(csvfile, (
             now,
             intensity,
@@ -77,6 +80,8 @@ while True:
             accelerometer_raw['y'],
             accelerometer_raw['z'],
         ))
+    except KeyboardInterrupt:
+        print("Exited successfully!")
     except Exception as e:
         logger.error('{}: {})'.format(e.__class__.__name__, e))
 
