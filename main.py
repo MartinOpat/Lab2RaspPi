@@ -82,10 +82,12 @@ while True:
         ))
     except KeyboardInterrupt:
         print("Exited successfully!")
-        sh.clear()
+        break
     except Exception as e:
-        sh.clear()
         logger.error('{}: {})'.format(e.__class__.__name__, e))
+        break
+    finally:
+        sh.clear()
 
     sleep(config.SLEEPTIME)
 
