@@ -28,11 +28,11 @@ logger.info(f'Logging to {csvfile}')
 
 while True:
 
-    pixel1 = random.randint(range(0, 7 + 1))
-    pixel2 = random.randint(range(0, 7 + 1))
-    r = random.randint(range(0, 255 + 1))
-    g = random.randint(range(0, 255 + 1))
-    b = random.randint(range(0, 255 + 1))
+    pixel1 = random.randint(0, 7)
+    pixel2 = random.randint(0, 7)
+    r = random.randint(0, 255)
+    g = random.randint(0, 255)
+    b = random.randint(0, 255)
     sh.clear()
     sh.set_pixel(pixel1, pixel2, (r, g, b))
 
