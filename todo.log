@@ -1,0 +1,10 @@
+[I 230513 19:20:10 main:22] Starting logging at 2023-05-13 19:20:10.657468
+[I 230513 19:20:10 main:23] Will log for 5 minutes (2023-05-13 19:25:10.657468)
+[I 230513 19:20:10 main:27] Logging to /home/pi/Lab2RaspPi/data/data01.csv
+[I 230513 19:24:40 main:22] Starting logging at 2023-05-13 19:24:40.868541
+[I 230513 19:24:40 main:23] Will log for 1 minutes (2023-05-13 19:25:40.868541)
+[I 230513 19:24:40 main:27] Logging to /home/pi/Lab2RaspPi/data/data02.csv
+[I 230513 19:25:41 main:33] Finished run at 2023-05-13 19:25:41.099924
+[I 230513 19:26:32 main:22] Starting logging at 2023-05-13 19:26:32.428158
+[I 230513 19:26:32 main:23] Will log for 1 minutes (2023-05-13 19:27:32.428158)
+[I 230513 19:26:32 main:27] Logging to /home/pi/Lab2RaspPi/data/data03.csv

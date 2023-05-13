@@ -80,6 +80,7 @@ while True:
             accelerometer_raw['y'],
             accelerometer_raw['z'],
         ))
+        sleep(config.SLEEPTIME)
     except KeyboardInterrupt:
         print("Exited successfully!")
         sh.clear()
@@ -88,7 +89,5 @@ while True:
         logger.error('{}: {})'.format(e.__class__.__name__, e))
         sh.clear()
         break
-
-    sleep(config.SLEEPTIME)
 
 sh.clear()
