@@ -1,2 +1,2 @@
-scp pi@$1:~/Lab2RaspPi/data/*.csv
+scp pi@$1:~/Lab2RaspPi/data/*.csv ~/Downloads
 
