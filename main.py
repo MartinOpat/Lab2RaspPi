@@ -49,6 +49,7 @@ while True:
         compass_raw = sh.get_compass_raw()
         gyro = sh.get_gyroscope()
         gyro_raw = sh.get_gyroscope_raw()
+        accelerometer = sh.get_accelerometer()
         accelerometer_raw = sh.get_accelerometer_raw()
         intensity = light_sensor.capture_intensity(ldr)
 
@@ -79,6 +80,9 @@ while True:
             accelerometer_raw['x'],
             accelerometer_raw['y'],
             accelerometer_raw['z'],
+            accelerometer['roll'],
+            accelerometer['pitch'],
+            accelerometer['yaw']
         ))
         sleep(config.SLEEPTIME)
     except KeyboardInterrupt:
