@@ -5,11 +5,11 @@ from scipy.optimize import curve_fit
 from datetime import datetime
 
 # Step 1: Load csv file
-df = pd.read_csv('17May23/data10.csv')
+df = pd.read_csv('22May23/mirrors/data02.csv')
 
 # Step 2: Convert "now" column to "time_ms"
 df['now'] = pd.to_datetime(df['now'])
-df['time_ms'] = (df['now'] - df['now'][0]).dt.total_seconds()
+df['time_ms'] = (df['now'] - df['now'][0]).dt.total_seconds() * 1000
 
 # Step 3: Plot "intensity" vs "time_ms"
 plt.figure()
@@ -40,7 +40,7 @@ def linear_func(x, a, b):
 popt, pcov = curve_fit(linear_func, df['omega'][1:], df['intensity'][1:])  # Ignore the first row because 'omega' has NaN value there
 
 plt.figure()
-plt.plot(df['omega'][1:], df['intensity'][1:], 'b-', label='data')  # Plot the data
+plt.scatter(df['omega'][1:], df['intensity'][1:], label='data')  # Plot the data
 plt.plot(df['omega'][1:], linear_func(df['omega'][1:], *popt), 'r-', label='fit: a=%5.3f, b=%5.3f' % tuple(popt))  # Plot the fit
 plt.xlabel('Omega')
 plt.ylabel('Intensity')

@@ -28,7 +28,7 @@ util.create_csv_file(csvfile, "now,intensity,humidity,temperature,temperature_fr
                               "temperature_from_pressure,pressure,orientation_roll,orientation_pitch,orientation_yaw,"
                               "compass,compass_raw_x,compass_raw_y,compass_raw_z,gyro_roll,gyro_pitch,gyro_yaw,"
                               "gyro_raw_x,gyro_raw_y,gyro_raw_z,accelerometer_raw_x,accelerometer_raw_y,"
-                              "accelerometer_raw_z, accelerometer_roll, accelerometer_pitch, accelerometer_yaw")
+                              "accelerometer_raw_z,accelerometer_roll,accelerometer_pitch,accelerometer_yaw")
 logger.info(f'Logging to {csvfile}')
 
 while True:
