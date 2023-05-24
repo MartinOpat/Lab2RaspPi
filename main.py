@@ -43,9 +43,9 @@ while True:
         # to show that working
         pixel1 = random.randint(0, 7)
         pixel2 = random.randint(0, 7)
-        r = random.randint(0, 255)
-        g = random.randint(0, 255)
-        b = random.randint(0, 255)
+        r = random.randint(0, 60)
+        g = random.randint(0, 60)
+        b = random.randint(0, 60)
         sh.clear()
         sh.set_pixel(pixel1, pixel2, (r, g, b))
 
