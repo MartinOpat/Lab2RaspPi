@@ -104,7 +104,7 @@ def plot_rel_diff_intensity(data, i, ax, iax):
 
 def plot_run(data, i):
     fig, ax = plt.subplots(1, 4, figsize=(48, 12))
-    fig.suptitle(f"All relevel graphs for {i}th run")
+    fig.suptitle(f"All relevant graphs for {i}th run")
 
     plot_omega(data, i, ax, 0)
     plot_intensity(data, i, ax, 1)
@@ -112,6 +112,40 @@ def plot_run(data, i):
     plot_rel_diff_intensity(data, i, ax, 3)
 
     plt.show()
+
+
+def calculate_phi(data, i):
+    data[i]["phi"] = np.arccos(data[i]["intensity_rel_diff"] - 0.5)
+
+
+def calculate_omega_res(data, i):
+    data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (8 * pi * A)
+
+
+def plot_omega_res(data, i, ax, iax):
+    ax[iax].scatter(data[i]["time"], data[i]["omega_res"])
+    ax[iax].title.set_text("Graphs of calculated rotational speed as a function of time")
+    ax[iax].set_xlabel("time [s]")
+    ax[iax].set_ylabel("Rotational speed [rad / s]")
+
+
+def plot_phi(data, i, ax, iax):
+    ax[iax].scatter(data[i]["time"], data[i]["phi"])
+    ax[iax].title.set_text("Graphs of phi as a function of time")
+    ax[iax].set_xlabel("time [s]")
+    ax[iax].set_ylabel("Phi [rad]")
+
+
+def plot_run_res(data, i):
+    fig, ax = plt.subplots(1, 3, figsize=(36, 12))
+    fig.suptitle(f"All relevant graphs for {i}th run")
+
+    plot_omega(data, i, ax, 0)
+    plot_omega_res(data, i, ax, 1)
+    plot_phi(data, i, ax, 2)
+
+    plt.show()
+
 
 if __name__ == "__main__":
     num_runs = 24
@@ -121,9 +155,12 @@ if __name__ == "__main__":
         calculate_time(runs, i)
         calculate_omega3(runs, i)
         calculate_rel_diff_intensity(runs, i)
+        calculate_phi(runs, i)
+        calculate_omega_res(runs, i)
 
     i_run = 23
     plot_run(runs, i_run)
+    plot_run_res(runs, i_run)
 
 
 
