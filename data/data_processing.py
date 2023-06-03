@@ -6,10 +6,13 @@ matplotlib.rcParams.update({'font.size': 18})
 
 # consts
 pi = np.pi
-R = 10 / 100  # m
+R = 15 / 100  # m
 c = 299792458  # m / s
 lambda_c = 620 * 10**(-9)  # m
-A = pi*R**2
+A = 1.5*pi*R**2
+L = 2  # m
+D = 30 / 100  # m
+
 
 header = "now,intensity,humidity,temperature,temperature_from_humidity," + \
                               "temperature_from_pressure,pressure,gyro_roll,gyro_pitch,gyro_yaw," + \
@@ -114,15 +117,17 @@ def plot_run(data, i):
     plt.show()
 
 
-def calculate_phi(data, i):
-    data[i]["phi"] = np.arccos(data[i]["intensity_rel_diff"] - 0.5)
+def calculate_phi(data, i, I0):
+    data[i]["phi"] = np.arccos(np.sqrt(data[i]["intensity"] / I0))
 
 
 def calculate_omega_res(data, i):
-    data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (8 * pi * A)
+    # data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (8 * pi * A)
+    data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (2 * pi * L * D)
 
 
 def plot_omega_res(data, i, ax, iax):
+    ax[iax].set_ylim([0, 30])
     ax[iax].scatter(data[i]["time"], data[i]["omega_res"])
     ax[iax].title.set_text("Graphs of calculated rotational speed as a function of time")
     ax[iax].set_xlabel("time [s]")
@@ -137,29 +142,32 @@ def plot_phi(data, i, ax, iax):
 
 
 def plot_run_res(data, i):
-    fig, ax = plt.subplots(1, 3, figsize=(36, 12))
+    fig, ax = plt.subplots(1, 4, figsize=(48, 12))
     fig.suptitle(f"All relevant graphs for {i}th run")
 
     plot_omega(data, i, ax, 0)
-    plot_omega_res(data, i, ax, 1)
-    plot_phi(data, i, ax, 2)
+    plot_intensity(data, i, ax, 1)
+    plot_omega_res(data, i, ax, 2)
+    plot_phi(data, i, ax, 3)
 
     plt.show()
 
 
 if __name__ == "__main__":
-    num_runs = 24
-    runs = load_data("2June23/")
+    # num_runs = 24
+    num_runs = 17
+    # runs = load_data("2June23/")
+    runs = load_data("14May23/")
 
     for i in range(num_runs):
         calculate_time(runs, i)
         calculate_omega3(runs, i)
         calculate_rel_diff_intensity(runs, i)
-        calculate_phi(runs, i)
+        calculate_phi(runs, i, 0.65)
         calculate_omega_res(runs, i)
 
-    i_run = 23
-    plot_run(runs, i_run)
+    i_run = 2
+    # plot_run(runs, i_run)
     plot_run_res(runs, i_run)
 
 
