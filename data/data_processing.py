@@ -11,10 +11,9 @@ c = 299792458  # m / s
 lambda_c = 620 * 10**(-9)  # m
 A = pi*R**2
 
-header = "now,intensity,humidity,temperature,temperature_from_humidity,temperature_from_pressure,pressure," \
-         "orientation_roll,orientation_pitch,orientation_yaw,compass,compass_raw_x,compass_raw_y,compass_raw_z," \
-         "gyro_roll,gyro_pitch,gyro_yaw,gyro_raw_x,gyro_raw_y,gyro_raw_z,accelerometer_raw_x,accelerometer_raw_y," \
-         "accelerometer_raw_z,accelerometer_roll,accelerometer_pitch,accelerometer_yaw\n"
+header = "now,intensity,humidity,temperature,temperature_from_humidity," + \
+                              "temperature_from_pressure,pressure,gyro_roll,gyro_pitch,gyro_yaw," + \
+                              "gyro_raw_x,gyro_raw_y,gyro_raw_z\n"
 
 
 def append_headers(i_start, i_end):
