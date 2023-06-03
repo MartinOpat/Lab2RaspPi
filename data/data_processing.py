@@ -6,12 +6,20 @@ matplotlib.rcParams.update({'font.size': 18})
 
 # consts
 pi = np.pi
-R = 15 / 100  # m
 c = 299792458  # m / s
-lambda_c = 620 * 10**(-9)  # m
-A = 1.5*pi*R**2
-L = 2  # m
-D = 30 / 100  # m
+
+# consts laser
+# R = 15 / 100  # m
+# lambda_c = 620 * 10**(-9)  # m
+# A = 1.5*pi*R**2
+# L = 2  # m
+# D = 30 / 100  # m
+
+# consts glass tubes
+# A = (9.3*12.25) / 10000  # m
+lambda_c = 532 * 10**(-9)  # m
+L = 4*pi*5.85/100 + 2*(9.3+12.25)/100  # m
+D = 15.38/100  # m
 
 
 header = "now,intensity,humidity,temperature,temperature_from_humidity," + \
@@ -119,6 +127,7 @@ def plot_run(data, i):
 
 def calculate_phi(data, i, I0):
     data[i]["phi"] = np.arccos(np.sqrt(data[i]["intensity"] / I0))
+    # data[i]["phi"] = abs(np.arccos(np.sqrt(data[i]["intensity"] / I0)) - 0.74)
 
 
 def calculate_omega_res(data, i):
@@ -127,7 +136,6 @@ def calculate_omega_res(data, i):
 
 
 def plot_omega_res(data, i, ax, iax):
-    ax[iax].set_ylim([0, 30])
     ax[iax].scatter(data[i]["time"], data[i]["omega_res"])
     ax[iax].title.set_text("Graphs of calculated rotational speed as a function of time")
     ax[iax].set_xlabel("time [s]")
@@ -163,9 +171,11 @@ if __name__ == "__main__":
         calculate_time(runs, i)
         calculate_omega3(runs, i)
         calculate_rel_diff_intensity(runs, i)
-        calculate_phi(runs, i, 0.65)
+        # calculate_phi(runs, i, 0.915)
+        calculate_phi(runs, i, 1.19)
         calculate_omega_res(runs, i)
 
+    # i_run = 23
     i_run = 2
     # plot_run(runs, i_run)
     plot_run_res(runs, i_run)
