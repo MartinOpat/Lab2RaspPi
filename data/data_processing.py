@@ -30,6 +30,7 @@ def append_headers(i_start, i_end):
 
 
 def load_data(path):
+    data = []
     for i in range(1, num_runs+1):
         if i < 10:
             filename = f"data0{i}.csv"
@@ -37,6 +38,7 @@ def load_data(path):
             filename = f"data{i}.csv"
 
         data.append(pd.read_csv(path+filename).dropna())
+    return data
 
 
 def calculate_time(data, i):
@@ -75,28 +77,28 @@ def calculate_rel_diff_intensity(data, i, I0=0.915):
 
 def plot_omega(data, i, ax, iax):
     ax[iax].scatter(data[i]["time"], data[i]["omega"])
-    ax[iax].title.set_text("Graphs of rotational speed as a function of time", fontsize=18)
+    ax[iax].title.set_text("Graphs of rotational speed as a function of time")
     ax[iax].set_xlabel("time [s]")
     ax[iax].set_ylabel("Rotational speed [rad / s]")
 
 
 def plot_intensity(data, i, ax, iax):
     ax[iax].scatter(data[i]["time"], data[i]["intensity"])
-    ax[iax].title.set_text("Graphs of intensity as a function of time", fontsize=18)
+    ax[iax].title.set_text("Graphs of intensity as a function of time")
     ax[iax].set_xlabel("time [s]")
     ax[iax].set_ylabel("Intensity [%]")
 
 
 def plot_intensity_vs_omega(data, i, ax, iax):
     ax[iax].scatter(abs(data[i]["omega"]), data[i]["intensity"])
-    ax[iax].title.set_text("Graphs of intensity as a function of omega", fontsize=18)
+    ax[iax].title.set_text("Graphs of intensity as a function of omega")
     ax[iax].set_xlabel("|omega| [rad / s]")
     ax[iax].set_ylabel("Intensity [%]")
 
 
 def plot_rel_diff_intensity(data, i, ax, iax):
     ax[iax].scatter(data[i]["time"], data[i]["intensity_rel_diff"])
-    ax[iax].title.set_text("Graphs of rel. diff. intensity as a function of time", fontsize=18)
+    ax[iax].title.set_text("Graphs of rel. diff. intensity as a function of time")
     ax[iax].set_xlabel("time [s]")
     ax[iax].set_ylabel(f"$\Delta ~ Intensity_{{rel}}$ [%]")
 
@@ -110,9 +112,19 @@ def plot_run(data, i):
     plot_intensity_vs_omega(data, i, ax, 2)
     plot_rel_diff_intensity(data, i, ax, 3)
 
+    plt.show()
 
 if __name__ == "__main__":
-    num_runs = 23
-    runs = []
+    num_runs = 24
+    runs = load_data("2June23/")
+
+    for i in range(num_runs):
+        calculate_time(runs, i)
+        calculate_omega3(runs, i)
+        calculate_rel_diff_intensity(runs, i)
+
+    i_run = 23
+    plot_run(runs, i_run)
+
 
 
