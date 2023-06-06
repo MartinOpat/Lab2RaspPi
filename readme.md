@@ -29,3 +29,25 @@ and [Official GPIO Zero Documentation](https://gpiozero.readthedocs.io/en/stable
     to a local machine (originally ssh-ed into the RaspberryPi).
  - `data/send_data.sh` bash script (originally run from the RaspberryPi) can be used to send data from the repository
     to a specified e-mail address. (Note: previous setup of corresponding packages is necessary)
+
+
+# Setup
+- Assuming an official (linux based) Raspberry-Pi operating system is installed, the only 
+    necessary package is `sense-hat` which can be installed as: 
+    ```console
+    sudo apt-get update
+    sudo apt-get upgrade
+    sudo apt install sense-hat
+    ```
+- All necessary python packages can be installed using:
+    ```console
+    pip install -r requirements.txt
+    ```
+- Measurements can be taken by executing:
+    ```console
+    python3 main.py
+    ```
+  or simply
+    ```console
+    python main.py
+    ```
