@@ -2,24 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import matplotlib
+import scipy
+from scipy.optimize import curve_fit
 matplotlib.rcParams.update({'font.size': 18})
-
-# consts
-pi = np.pi
-c = 299792458  # m / s
-
-# consts laser
-# R = 15 / 100  # m
-# lambda_c = 620 * 10**(-9)  # m
-# A = 1.5*pi*R**2
-# L = 2  # m
-# D = 30 / 100  # m
-
-# consts glass tubes
-# A = (9.3*12.25) / 10000  # m
-lambda_c = 532 * 10**(-9)  # m
-L = 4*pi*5.85/100 + 2*(9.3+12.25)/100  # m
-D = 15.38/100  # m
 
 
 header = "now,intensity,humidity,temperature,temperature_from_humidity," + \
@@ -85,8 +70,31 @@ def calculate_rel_diff_intensity(data, i, I0=0.915):
     data[i]["intensity_rel_diff"] = (data[i]["intensity"] - I0) / I0
 
 
+def interpolate_curve(x, a, b, c):
+    # return a*x + b
+    return a * np.log(b * x) + c
+
+
+def interpolate_omega(data_int):
+    data = data_int[(data_int["time"] > 6) & (data_int["time"] < 15)]
+    time = np.array(data["time"])
+    omega = np.array(data["omega"])
+    popt, pcov = curve_fit(
+        interpolate_curve,
+        time, omega
+    )
+    return lambda x: interpolate_curve(x, *popt), data_int
+
+
 def plot_omega(data, i, ax, iax):
-    ax[iax].scatter(data[i]["time"], data[i]["omega"])
+    start = 6
+    end = 12
+    x_int = np.linspace(start, end, int((end - start) / 0.2))
+    data_int = pd.DataFrame.copy(data[i][abs(data[i]["omega"]) < 9.9])
+    f_int, data_int = interpolate_omega(data_int)
+
+    ax[iax].scatter(data_int["time"], data_int["omega"], c="C0")
+    ax[iax].scatter(x_int, f_int(x_int), c="C0")
     ax[iax].title.set_text("Graphs of rotational speed as a function of time")
     ax[iax].set_xlabel("time [s]")
     ax[iax].set_ylabel("Rotational speed [rad / s]")
@@ -132,7 +140,7 @@ def calculate_phi(data, i, I0):
 
 def calculate_omega_res(data, i):
     # data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (8 * pi * A)
-    data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (2 * pi * L * D)
+    data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (2 * pi * L * D * n)
 
 
 def plot_omega_res(data, i, ax, iax):
@@ -153,30 +161,54 @@ def plot_run_res(data, i):
     fig, ax = plt.subplots(1, 4, figsize=(48, 12))
     fig.suptitle(f"All relevant graphs for {i}th run")
 
+    ax[0].set_ylim([-16, 1])
+    ax[2].set_ylim([-1, 16])
+
     plot_omega(data, i, ax, 0)
     plot_intensity(data, i, ax, 1)
     plot_omega_res(data, i, ax, 2)
     plot_phi(data, i, ax, 3)
 
+    plt.savefig("res.png")
     plt.show()
 
 
+# consts
+pi = np.pi
+c = 299792458  # m / s
+
+# consts laser
+# R = 15 / 100  # m
+lambda_c = 620 * 10**(-9)  # m
+# A = 1.5*pi*R**2
+L = 2  # m
+D = 23.5 / 100  # m
+n = 1.25  # number of turns
+
+# consts glass tubes
+# A = (9.3*12.25) / 10000  # m
+# lambda_c = 532 * 10**(-9)  # m
+# L = 4*pi*5.85/100 + 2*(9.3+12.25)/100  # m
+# D = 15.38/100  # m
+
+
 if __name__ == "__main__":
-    # num_runs = 24
-    num_runs = 17
-    # runs = load_data("2June23/")
-    runs = load_data("14May23/")
+    num_runs = 24
+    # num_runs = 17
+    # num_runs = 3
+    runs = load_data("Data_FibreCablesSetup_Attempt/")
+    # runs = load_data("Data_GlassTubesSetup_Attempt1/")
+    # runs = load_data("Data_FibreCablesSetup_Attempt2/")
 
     for i in range(num_runs):
         calculate_time(runs, i)
         calculate_omega3(runs, i)
         calculate_rel_diff_intensity(runs, i)
-        # calculate_phi(runs, i, 0.915)
-        calculate_phi(runs, i, 1.19)
+        calculate_phi(runs, i, 0.915)
+        # calculate_phi(runs, i, 1.19)
         calculate_omega_res(runs, i)
 
-    # i_run = 23
-    i_run = 2
+    i_run = 23
     # plot_run(runs, i_run)
     plot_run_res(runs, i_run)
 
