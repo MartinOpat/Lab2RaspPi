@@ -1,2 +1,3 @@
-mutt -s "Fresh data from pi" -a $1/*.csv -- martinopat.opat@gmail.com
+#!/bin/bash
+mutt -s "Fresh data from pi" -a $1/*.csv -- $2
 
