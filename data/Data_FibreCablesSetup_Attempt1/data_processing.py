@@ -70,52 +70,12 @@ def calculate_rel_diff_intensity(data, i, I0=0.915):
     data[i]["intensity_rel_diff"] = (data[i]["intensity"] - I0) / I0
 
 
-def interpolate_curve(x, a, b, c, d, e):
-    # return a*x + b
-    return a * np.log(b * x) + c
-    # return a*x**2 + b*x + c
-    # return a*x**4 + + b*x**3 + c*x**2 + d*x + e
-
-
-def interpolate_omega(data_int, start, end):
-    data = data_int[(data_int["time"] > start) & (data_int["time"] < end)]
-    time = np.array(data["time"])
-    omega = np.array(data["omega_res"])
-    popt, pcov = curve_fit(
-        interpolate_curve,
-        time, omega
-    )
-    return lambda x: interpolate_curve(x, *popt)
-
-
 def plot_omega(data, i, ax, iax, iax2):
     data_int = pd.DataFrame.copy(data[i])
-    # if i in [14, 15, 17, 23]:
-    if i in [14, 15, 17, 23]:
-        if i == 23:
-            start = 6
-            end = 12
-        elif i == 17 or i == 15:
-            start = 5.5
-            end = 12
-        elif i == 14:
-            start = 4
-            end = 9
-
-        data_int = pd.concat([data_int[data_int["time"] <= start], data_int[data_int["time"] >= end]])
-        f_int = interpolate_omega(data[i], start, end)
-        x_int = np.linspace(start, end+0.1, int((end - start) / 0.1))
-        ax[iax][iax2].scatter(x_int, f_int(x_int), c="C0")
-
-        ax[iax][iax2].scatter(data_int["time"], data_int["omega"], c="C0")
-        ax[iax][iax2].title.set_text(f"Graph of rotational speed $\omega$ as a function of time")
-        ax[iax][iax2].set_xlabel("time [s]")
-        ax[iax][iax2].set_ylabel(f"$\omega$ [rad / s]")
-    else:
-        ax[iax][iax2].scatter(data_int["time"], data_int["omega"], c="C0")
-        ax[iax][iax2].title.set_text(f"Graph of rotational speed $\omega$ as a function of time")
-        ax[iax][iax2].set_xlabel("time [s]")
-        ax[iax][iax2].set_ylabel(f"$\omega$ [rad / s]")
+    ax[iax][iax2].scatter(data_int["time"], data_int["omega"], c="C0")
+    ax[iax][iax2].title.set_text(f"Graph of rotational speed $\omega$ as a function of time")
+    ax[iax][iax2].set_xlabel("time [s]")
+    ax[iax][iax2].set_ylabel(f"$\omega$ [rad / s]")
 
 
 def plot_intensity(data, i, ax, iax, iax2):
@@ -206,15 +166,20 @@ def plot_run_res(data, i):
     plt.show()
 
 
-def weighted_mean_squared_error(data, i):
-    data_relevant = pd.DataFrame.copy(data[i][data[i]["omega_res"] > 1])
+# def weighted_mean_squared_error(data, i):
+def median_absolute_percentage_error(data, i):
+    data_relevant = pd.DataFrame.copy(data[i][(data[i]["omega_res"] > 1) & (data[i]["omega_res"] < 9.9)])
     data_relevant = data_relevant[data_relevant["time"] < 20]  # We are only interested in the peak
     y_true = data_relevant["omega"]
     y_pred = data_relevant["omega_res"]
     y_errors = data_relevant["omega_res_err"]
-    weights = 1 / np.square(y_errors)
-
-    return np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights)
+#     weights = np.sqrt(y_errors)
+#
+#     return np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights)
+#     return np.sqrt(np.mean(np.square(y_true - y_pred)))
+#     return np.mean(np.abs(y_true - y_pred))
+    y_true = np.array(y_true) + np.finfo(np.float32).eps
+    return np.median(np.abs((y_true - y_pred) / y_true)) * 100
 
 
 
@@ -255,11 +220,11 @@ if __name__ == "__main__":
         calculate_omega_res(runs, i)
         calculate_omega_res_err(runs, i)
         print(i, I0)
-        print(weighted_mean_squared_error(runs, i))
+        print(median_absolute_percentage_error(runs, i))
 
         plot_run_res(runs, i)
         with open(f"results/precision{i}.txt", "w") as f:
-            f.write(f"Curve evaluated precision is {weighted_mean_squared_error(runs, i)}\n")
+            f.write(f"Curve evaluated precision is {median_absolute_percentage_error(runs, i)} %\n")
             f.write(f"Calculated I0 = {I0}\n")
 
 
