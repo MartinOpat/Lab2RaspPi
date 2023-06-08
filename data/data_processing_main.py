@@ -140,10 +140,10 @@ def calculate_phi(data, i, I0):
     # data[i]["phi"] = abs(np.arccos(np.sqrt(data[i]["intensity"] / I0)) - 0.74)
 
 
-def calculate_phi_errors(data, i):
+def calculate_phi_errors(data, i, I0):
     I = data[i]["intensity"]
     # data[i]["phi_err"] = Ierr / (2 * np.sqrt(I * (I0 - I)))
-    data[i]["phi_err"] = 2*I*Ierr  # approximation
+    data[i]["phi_err"] = 2*data[i]["phi"]*I0*Ierr  # approximation
 
 
 def calculate_omega_res(data, i):

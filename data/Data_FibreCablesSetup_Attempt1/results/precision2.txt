@@ -1,2 +1,2 @@
-Curve evaluated precision is 5.763838896915105
+Curve evaluated precision is 6.776392567613435
 Calculated I0 = 0.9689631442092624

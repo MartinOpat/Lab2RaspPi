@@ -141,7 +141,8 @@ def calculate_phi(data, i, I0):
     helper_func = lambda x: high_phi(x) if I0 > x else low_phi(x)
     #
     # data[i]["phi"] = np.arccos(np.sqrt(data[i]["intensity"] / I0))
-    data[i]["phi"] = data[i]["intensity"].apply(helper_func)
+    # data[i]["phi"] = data[i]["intensity"].apply(helper_func)
+    data[i]["phi"] = abs(-np.arccos(np.sqrt(data[i]["intensity"] / I0)) - alpha)
 
 
 def calculate_phi_errors(data, i, I0):
@@ -151,6 +152,7 @@ def calculate_phi_errors(data, i, I0):
 
 
 def calculate_omega_res(data, i):
+    # data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (8 * pi * A)
     data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (2 * pi * L * D * n)
 
 
@@ -176,10 +178,10 @@ def plot_run_res(data, i):
     fig, ax = plt.subplots(2, 2, figsize=(24, 24))
     fig.suptitle(f"Graphs for one complete measurement using fibre-cables setup (run={i})", fontsize=40)
 
-    # ax[0][0].set_ylim([-1, 17])
-    # ax[1][0].set_ylim([-1, 17])
-    # ax[0][1].set_ylim([0.83, 0.93])
-    # ax[1][1].set_ylim([-0.01, 0.33])
+    ax[0][0].set_ylim([-1, 9])
+    ax[1][0].set_ylim([-1, 9])
+    ax[0][1].set_ylim([0.67, 0.76])
+    ax[1][1].set_ylim([-0.01, 0.06])
 
     plot_omega(data, i, ax, 0, 0)
     plot_intensity(data, i, ax, 0, 1)
@@ -192,6 +194,7 @@ def plot_run_res(data, i):
 
 def weighted_mean_squared_error(data, i):
     data_relevant = pd.DataFrame.copy(data[i][data[i]["omega_res"] > 1])
+    data_relevant = data_relevant[data_relevant["time"] < 25]
     y_true = data_relevant["omega"]
     y_pred = data_relevant["omega_res"]
     y_errors = data_relevant["omega_res_err"]
@@ -218,16 +221,21 @@ Ierr = 0.002
 A = (9.3*12.25) / 10000  # m
 lambda_c = 532 * 10**(-9)  # m
 L = 4*pi*5.85/100 + 2*(9.3+12.25)/100  # m
+# L = 2*(9.3+12.25)/100  # m
 D = 15.38/100  # m
 Derr = 1 / 100  # m
 n = 1
 
+alpha = -0.4336499700929152  # rad (from fitting)
+# I0 = 0.7 / np.cos(alpha)**2 # % (from fitting)
 if __name__ == "__main__":
     num_runs = 17
     runs = load_data("")
 
     for i in range(num_runs):
-        I0 = calculate_I0(runs, i)
+        I0 = calculate_I0(runs, i) / np.cos(alpha)**2
+        runs[i] = runs[i][runs[i]["intensity"] > 0.5]
+
         calculate_time(runs, i)
         calculate_omega3(runs, i)  # here error is negligible
         calculate_rel_diff_intensity(runs, i)
