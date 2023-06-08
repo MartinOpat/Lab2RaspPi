@@ -182,13 +182,37 @@ def median_absolute_percentage_error(data, i):
     return np.median(np.abs((y_true - y_pred) / y_true)) * 100
 
 
-
 def calculate_I0(data, i):
     data[i]["intensity_diff"] = data[i]["intensity"].diff()
     diff_threshold = data[i]["intensity_diff"].std()
     mask = (data[i]["intensity_diff"].abs() < diff_threshold) & (data[i]["intensity_diff"].shift(-1).abs() < diff_threshold)
     average_intensity = data[i].loc[mask, "intensity"].mean()
     return average_intensity + Ierr
+
+
+def plot_omega_on_omega(data, i):
+    fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+    ax.title.set_text(f"Graph of true and calculated $\omega$ (run={i})")
+
+    ax.set_ylim([-1, 18])
+
+    data_int = pd.DataFrame.copy(data[i])
+    ax.scatter(data_int["time"], data_int["omega"], c="C1", label=f"$\omega$")
+    ax.set_xlabel("time [s]")
+    ax.set_ylabel(f"$\omega$ [rad / s]")
+
+
+    ax.errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5, label=f"$\omega_{{res}}$")
+    ax.set_xlabel("time [s]")
+    ax.set_ylabel(f"$\omega_{{res}}$ [rad / s]")
+
+    plt.legend()
+    plt.grid()
+    plt.yticks([i for i in range(0, 18)])
+    plt.savefig(f"results/omega_on_omega{i}.png")
+    plt.show()
+
+
 
 # consts
 pi = np.pi
@@ -222,10 +246,11 @@ if __name__ == "__main__":
         print(i, I0)
         print(median_absolute_percentage_error(runs, i))
 
-        plot_run_res(runs, i)
-        with open(f"results/precision{i}.txt", "w") as f:
-            f.write(f"Curve evaluated precision is {median_absolute_percentage_error(runs, i)} %\n")
-            f.write(f"Calculated I0 = {I0}\n")
+        # plot_run_res(runs, i)
+        # with open(f"results/precision{i}.txt", "w") as f:
+        #     f.write(f"Curve evaluated precision is {median_absolute_percentage_error(runs, i)} %\n")
+        #     f.write(f"Calculated I0 = {I0}\n")
 
-
+    for i in [14, 15, 17, 23]:
+        plot_omega_on_omega(runs, i)
 
