@@ -1,0 +1,1 @@
+Curve evaluated precision is 2.9676537727702534
