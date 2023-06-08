@@ -111,7 +111,7 @@ def plot_intensity(data, i, ax, iax, iax2):
 
 def plot_intensity_vs_omega(data, i, ax, iax, iax2):
     ax[iax][iax2].scatter(abs(data[i]["omega"]), data[i]["intensity"])
-    ax[iax][iax2].title.set_text(f"Graph of intensity as a function of $\omega$")
+    ax[iax][iax2].title.set_text(f"Graph of intensity $I$ as a function of $\omega$")
     ax[iax][iax2].set_xlabel(f"|$\omega$| [rad / s]")
     ax[iax][iax2].set_ylabel("Intensity [%]")
 
@@ -144,10 +144,10 @@ def calculate_phi(data, i, I0):
     data[i]["phi"] = data[i]["intensity"].apply(helper_func)
 
 
-def calculate_phi_errors(data, i):
+def calculate_phi_errors(data, i, I0):
     I = data[i]["intensity"]
     # data[i]["phi_err"] = Ierr / (2 * np.sqrt(I * (I0 - I)))
-    data[i]["phi_err"] = 2*I*Ierr  # approximation
+    data[i]["phi_err"] = 2*data[i]["phi"]*I0*Ierr  # approximation
 
 
 def calculate_omega_res(data, i):
@@ -176,8 +176,10 @@ def plot_run_res(data, i):
     fig, ax = plt.subplots(2, 2, figsize=(24, 24))
     fig.suptitle(f"Graphs for one complete measurement using fibre-cables setup (run={i})", fontsize=40)
 
-    ax[0][0].set_ylim([-1, 16])
-    ax[1][0].set_ylim([-1, 16])
+    ax[0][0].set_ylim([-1, 17])
+    ax[1][0].set_ylim([-1, 17])
+    ax[0][1].set_ylim([0.83, 0.93])
+    ax[1][1].set_ylim([-0.01, 0.33])
 
     plot_omega(data, i, ax, 0, 0)
     plot_intensity(data, i, ax, 0, 1)
@@ -189,24 +191,27 @@ def plot_run_res(data, i):
 
 
 def weighted_mean_squared_error(data, i):
-    y_true = data[i]["omega"]
-    y_pred = data[i]["omega_res"]
-    y_errors = data[i]["omega_res_err"]
+    data_relevant = pd.DataFrame.copy(data[i][data[i]["omega_res"] > 1])
+    y_true = data_relevant["omega"]
+    y_pred = data_relevant["omega_res"]
+    y_errors = data_relevant["omega_res_err"]
     weights = 1 / np.square(y_errors)
+
     return np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights)
+
 
 
 def calculate_I0(data, i):
     data[i]["intensity_diff"] = data[i]["intensity"].diff()
-    diff_threshold = data[i]["intensity_diff"].std() * 3
-    mask = (data[i]["intensity_diff"] < diff_threshold) & (data[i]["intensity_diff"].shift(-1) < diff_threshold)
+    diff_threshold = data[i]["intensity_diff"].std()
+    mask = (data[i]["intensity_diff"].abs() < diff_threshold) & (data[i]["intensity_diff"].shift(-1).abs() < diff_threshold)
     average_intensity = data[i].loc[mask, "intensity"].mean()
     return average_intensity + Ierr
 
 # consts
 pi = np.pi
 c = 299792458  # m / s
-Ierr = 0.2 / 100
+Ierr = 0.002
 
 # consts laser
 # R = 15 / 100  # m
@@ -227,13 +232,16 @@ if __name__ == "__main__":
         calculate_omega3(runs, i)  # here error is negligible
         calculate_rel_diff_intensity(runs, i)
         calculate_phi(runs, i, I0)
-        calculate_phi_errors(runs, i)
+        calculate_phi_errors(runs, i, I0)
         calculate_omega_res(runs, i)
         calculate_omega_res_err(runs, i)
+        print(i, I0)
+        print(weighted_mean_squared_error(runs, i))
 
         plot_run_res(runs, i)
         with open(f"results/precision{i}.txt", "w") as f:
-            f.write(f"Curve evaluated precision is {weighted_mean_squared_error(runs, i)}")
+            f.write(f"Curve evaluated precision is {weighted_mean_squared_error(runs, i)}\n")
+            f.write(f"Calculated I0 = {I0}\n")
 
 
 
