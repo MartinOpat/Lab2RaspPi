@@ -155,8 +155,8 @@ def calculate_omega_res(data, i):
 
 
 def calculate_omega_res_err(data, i):
-    data[i]["omega_res_err"] = lambda_c * c * data[i]["phi_err"] / (2 * pi * L * D * n)
-
+    # data[i]["omega_res_err"] = lambda_c * c * data[i]["phi_err"] / (2 * pi * L * D * n)
+    data[i]["omega_res_err"] =  data[i]["omega_res"] * np.sqrt((data[i]["phi_err"] / data[i]["phi"])**2 + (Derr / D)**2 + (lamda_err / lambda_c )**2)
 
 def plot_omega_res(data, i, ax, iax, iax2):
     ax[iax][iax2].errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5)
@@ -176,8 +176,8 @@ def plot_run_res(data, i):
     fig, ax = plt.subplots(2, 2, figsize=(24, 24))
     fig.suptitle(f"Graphs for one complete measurement using fibre-cables setup (run={i})", fontsize=40)
 
-    ax[0][0].set_ylim([-1, 17])
-    ax[1][0].set_ylim([-1, 17])
+    ax[0][0].set_ylim([-1, 18])
+    ax[1][0].set_ylim([-1, 18])
     ax[0][1].set_ylim([0.83, 0.93])
     ax[1][1].set_ylim([-0.01, 0.33])
 
@@ -215,11 +215,13 @@ Ierr = 0.002
 
 # consts laser
 # R = 15 / 100  # m
-lambda_c = 620 * 10**(-9)  # m
+lambda_c = 650 * 10**(-9)  # m
+lamda_err = 30 * 10**(-9)  # m
 # A = 1.5*pi*R**2
 L = 2  # m
 D = 23.5 / 100  # m
-n = 1.1  # number of turns
+Derr = 1 / 100  # m
+n = 1.2  # number of turns
 
 
 if __name__ == "__main__":
