@@ -1,2 +1,2 @@
-Curve evaluated precision is 1131.1753083195451 %
-Calculated I0 = 0.9195387336838053
+Median absolute perc. err. is 1131.1757505728654 %
+Weighted mean squared error is 1131.1757505728654 [I]^2

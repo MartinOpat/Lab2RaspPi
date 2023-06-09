@@ -124,8 +124,8 @@ def calculate_phi(data, i, I0):
 def calculate_phi_errors(data, i, I0):
     I = data[i]["intensity"]
     # data[i]["phi_err"] = Ierr / (2 * np.sqrt(I * (I0 - I)))
-    data[i]["phi_err"] = 2*data[i]["phi"]*I0*Ierr  # approximation
-
+    # data[i]["phi_err"] = 2*data[i]["phi"]*I0*Ierr  # approximation
+    data[i]["phi_err"] = Ierr / (2 * np.sqrt(1 - I / I0))
 
 def calculate_omega_res(data, i):
     # data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (8 * pi * A)
@@ -168,20 +168,23 @@ def plot_run_res(data, i):
     plt.show()
 
 
-# def weighted_mean_squared_error(data, i):
 def median_absolute_percentage_error(data, i):
     data_relevant = pd.DataFrame.copy(data[i][(data[i]["omega_res"] > 1) & (data[i]["omega_res"] < 9.9)])
-    data_relevant = data_relevant[data_relevant["time"] < 25]
+    data_relevant = data_relevant[data_relevant["time"] < 20]  # We are only interested in the peak
+    y_true = data_relevant["omega"]
+    y_pred = data_relevant["omega_res"]
+    return np.median(np.abs((y_true - y_pred) / y_true)) * 100
+
+
+def weighted_mean_squared_error(data, i):
+    data_relevant = pd.DataFrame.copy(data[i][(data[i]["omega_res"] > 1) & (data[i]["omega_res"] < 9.9)])
+    data_relevant = data_relevant[data_relevant["time"] < 20]  # We are only interested in the peak
     y_true = data_relevant["omega"]
     y_pred = data_relevant["omega_res"]
     y_errors = data_relevant["omega_res_err"]
-    weights = 1 / np.sqrt(y_errors)
+    weights = 1 / np.square(y_errors)
 
-    # return np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights)
-    # return np.sqrt(np.mean(np.square(y_true - y_pred)))
-    # return np.mean(np.abs(y_true - y_pred))
-    y_true = np.array(y_true) + np.finfo(np.float32).eps
-    return np.median(np.abs((y_true - y_pred) / y_true)) * 100
+    return np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights)
 
 
 def calculate_I0(data, i):
@@ -251,8 +254,8 @@ if __name__ == "__main__":
 
         plot_run_res(runs, i)
         with open(f"results/precision{i}.txt", "w") as f:
-            f.write(f"Curve evaluated precision is {median_absolute_percentage_error(runs, i)} %\n")
-            f.write(f"Calculated I0 = {I0}\n")
+            f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
+            f.write(f"Weighted mean squared error is {median_absolute_percentage_error(runs, i)} [I]^2\n")
 
     for i in [4, 5, 7, 10]:
         plot_omega_on_omega(runs, i)
