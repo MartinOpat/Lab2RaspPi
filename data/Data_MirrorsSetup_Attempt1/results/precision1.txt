@@ -1,0 +1,2 @@
+Median absolute perc. err. is 336.8308916230789 %
+Weighted mean squared error is 6.139317160917351 [rad /s]

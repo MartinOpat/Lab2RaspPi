@@ -198,7 +198,7 @@ def calculate_I0(data, i):
 
 def plot_omega_on_omega(data, i):
     fig, ax = plt.subplots(1, 1, figsize=(12, 12))
-    ax.title.set_text(f"Graph of true and calculated $\Omega$ (run={i})")
+    ax.title.set_text(f"Graph of true and calculated $\Omega$ (run={i}) - fibre cables")
 
     ax.set_ylim([-1, 18])
 
@@ -223,7 +223,7 @@ def plot_omega_on_omega(data, i):
 # consts
 pi = np.pi
 c = 299792458  # m / s
-Ierr = 0.002
+Ierr = 0.002  # [%]
 
 # consts laser
 # R = 15 / 100  # m

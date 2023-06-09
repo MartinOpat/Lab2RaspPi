@@ -152,7 +152,7 @@ def plot_phi(data, i, ax, iax, iax2):
 
 def plot_run_res(data, i):
     fig, ax = plt.subplots(2, 2, figsize=(24, 24))
-    fig.suptitle(f"Graphs for one complete measurement using glass-tubes setup (run={i})", fontsize=40)
+    fig.suptitle(f"Graphs for one complete measurement using acrylic-tubes setup (run={i})", fontsize=40)
 
     ax[0][0].set_ylim([-1, 9])
     ax[1][0].set_ylim([-1, 9])
@@ -197,7 +197,7 @@ def calculate_I0(data, i):
 
 def plot_omega_on_omega(data, i):
     fig, ax = plt.subplots(1, 1, figsize=(12, 12))
-    ax.title.set_text(f"Graph of true and calculated $\Omega$ (run={i})")
+    ax.title.set_text(f"Graph of true and calculated $\Omega$ (run={i}) - acrylic tubes")
 
     ax.set_ylim([-1, 18])
 
@@ -223,7 +223,7 @@ pi = np.pi
 c = 299792458  # m / s
 Ierr = 0.002
 
-# consts glass tubes
+# consts acrylic tubes
 A = (9.3*12.25) / 10000  # m
 lambda_c = 532 * 10**(-9)  # m
 L = 4*pi*5.85/100 + 2*(9.3+12.25)/100  # m
