@@ -124,7 +124,10 @@ def calculate_phi_errors(data, i, I0):
     I = data[i]["intensity"]
     # data[i]["phi_err"] = Ierr / (2 * np.sqrt(I * (I0 - I)))
     # data[i]["phi_err"] = 2*data[i]["phi"]*I0*Ierr  # approximation
-    data[i]["phi_err"] = Ierr / (2 * np.sqrt(1 - I/I0))
+    high_phi_err = lambda  x: Ierr / (2 * np.sqrt(1 - x/I0))
+    low_phi_err = lambda x: Ierr
+    helper_func_err = lambda x: high_phi_err(x) if x - I0 > 3*Ierr else low_phi_err(x)
+    data[i]["phi_err"] = data[i]["intensity"].apply(helper_func_err)
 
 def calculate_omega_res(data, i):
     data[i]["omega_res"] = lambda_c * c * data[i]["phi"] / (2 * pi * L * D * n)
@@ -252,7 +255,7 @@ if __name__ == "__main__":
         plot_run_res(runs, i)
         with open(f"results/precision{i}.txt", "w") as f:
             f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
-            f.write(f"Weighted mean squared error is {median_absolute_percentage_error(runs, i)} [I]^2\n")
+            f.write(f"Weighted mean squared error is {weighted_mean_squared_error(runs, i)} [I]^2\n")
 
     for i in [14, 15, 17, 23]:
         plot_omega_on_omega(runs, i)

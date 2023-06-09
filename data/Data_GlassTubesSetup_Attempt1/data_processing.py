@@ -134,7 +134,7 @@ def calculate_omega_res(data, i):
 
 def calculate_omega_res_err(data, i):
     # data[i]["omega_res_err"] = lambda_c * c * data[i]["phi_err"] / (2 * pi * L * D * n)
-    data[i]["omega_res_err"] =  data[i]["omega_res"] * np.sqrt((data[i]["phi_err"] / data[i]["phi"])**2 + (Derr / D)**2)
+    data[i]["omega_res_err"] =  data[i]["omega_res"] * np.sqrt((data[i]["phi_err"] / data[i]["phi"])**2 + (Derr / D)**2 + (Lerr / L)**2)
 
 def plot_omega_res(data, i, ax, iax, iax2):
     ax[iax][iax2].errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5)
@@ -227,6 +227,7 @@ Ierr = 0.002
 A = (9.3*12.25) / 10000  # m
 lambda_c = 532 * 10**(-9)  # m
 L = 4*pi*5.85/100 + 2*(9.3+12.25)/100  # m
+Lerr = 1 / 100  # m
 # L = 2*(9.3+12.25)/100  # m
 D = 15.38/100  # m
 Derr = 1 / 100  # m
@@ -255,7 +256,7 @@ if __name__ == "__main__":
         plot_run_res(runs, i)
         with open(f"results/precision{i}.txt", "w") as f:
             f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
-            f.write(f"Weighted mean squared error is {median_absolute_percentage_error(runs, i)} [I]^2\n")
+            f.write(f"Weighted mean squared error is {weighted_mean_squared_error(runs, i)} [I]^2\n")
 
     for i in [4, 5, 7, 10]:
         plot_omega_on_omega(runs, i)
