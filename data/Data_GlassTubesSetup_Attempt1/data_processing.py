@@ -170,21 +170,21 @@ def plot_run_res(data, i):
 
 def median_absolute_percentage_error(data, i):
     data_relevant = pd.DataFrame.copy(data[i][(data[i]["omega_res"] > 1) & (data[i]["omega_res"] < 9.9)])
-    data_relevant = data_relevant[data_relevant["time"] < 20]  # We are only interested in the peak
+    data_relevant = data_relevant[data_relevant["time"] < 25]  # We are only interested in the peak
     y_true = data_relevant["omega"]
     y_pred = data_relevant["omega_res"]
     return np.median(np.abs((y_true - y_pred) / y_true)) * 100
 
 
-def weighted_mean_squared_error(data, i):
+def weighted_rms_error(data, i):
     data_relevant = pd.DataFrame.copy(data[i][(data[i]["omega_res"] > 1) & (data[i]["omega_res"] < 9.9)])
     data_relevant = data_relevant[data_relevant["time"] < 20]  # We are only interested in the peak
     y_true = data_relevant["omega"]
     y_pred = data_relevant["omega_res"]
     y_errors = data_relevant["omega_res_err"]
-    weights = 1 / np.square(y_errors)
+    weights = 1 / np.sqrt(y_errors)
 
-    return np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights)
+    return np.sqrt(np.sum(weights * np.square(y_true - y_pred)) / np.sum(weights))
 
 
 def calculate_I0(data, i):
@@ -256,7 +256,7 @@ if __name__ == "__main__":
         plot_run_res(runs, i)
         with open(f"results/precision{i}.txt", "w") as f:
             f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
-            f.write(f"Weighted mean squared error is {weighted_mean_squared_error(runs, i)} [I]^2\n")
+            f.write(f"Weighted mean squared error is {weighted_rms_error(runs, i)} [rad /s]\n")
 
     for i in [4, 5, 7, 10]:
         plot_omega_on_omega(runs, i)
