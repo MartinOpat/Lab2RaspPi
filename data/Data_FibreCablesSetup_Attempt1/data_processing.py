@@ -73,9 +73,9 @@ def calculate_rel_diff_intensity(data, i, I0=0.915):
 def plot_omega(data, i, ax, iax, iax2):
     data_int = pd.DataFrame.copy(data[i])
     ax[iax][iax2].scatter(data_int["time"], data_int["omega"], c="C0")
-    ax[iax][iax2].title.set_text(f"Graph of rotational speed $\omega$ as a function of time")
+    ax[iax][iax2].title.set_text(f"Graph of rotational speed $\Omega$ as a function of time")
     ax[iax][iax2].set_xlabel("time [s]")
-    ax[iax][iax2].set_ylabel(f"$\omega$ [rad / s]")
+    ax[iax][iax2].set_ylabel(f"$\Omega$ [rad / s]")
 
 
 def plot_intensity(data, i, ax, iax, iax2):
@@ -87,8 +87,8 @@ def plot_intensity(data, i, ax, iax, iax2):
 
 def plot_intensity_vs_omega(data, i, ax, iax, iax2):
     ax[iax][iax2].scatter(abs(data[i]["omega"]), data[i]["intensity"])
-    ax[iax][iax2].title.set_text(f"Graph of intensity $I$ as a function of $\omega$")
-    ax[iax][iax2].set_xlabel(f"|$\omega$| [rad / s]")
+    ax[iax][iax2].title.set_text(f"Graph of intensity $I$ as a function of $\Omega$")
+    ax[iax][iax2].set_xlabel(f"|$\Omega$| [rad / s]")
     ax[iax][iax2].set_ylabel("Intensity [%]")
 
 
@@ -136,9 +136,9 @@ def calculate_omega_res_err(data, i):
 
 def plot_omega_res(data, i, ax, iax, iax2):
     ax[iax][iax2].errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5)
-    ax[iax][iax2].title.set_text(f"Graph of calculated rotational speed $\omega_{{res}}$ as a function of time")
+    ax[iax][iax2].title.set_text(f"Graph of calculated rotational speed $\Omega_{{res}}$ as a function of time")
     ax[iax][iax2].set_xlabel("time [s]")
-    ax[iax][iax2].set_ylabel(f"$\omega_{{res}}$ [rad / s]")
+    ax[iax][iax2].set_ylabel(f"$\Omega_{{res}}$ [rad / s]")
 
 
 def plot_phi(data, i, ax, iax, iax2):
@@ -192,19 +192,19 @@ def calculate_I0(data, i):
 
 def plot_omega_on_omega(data, i):
     fig, ax = plt.subplots(1, 1, figsize=(12, 12))
-    ax.title.set_text(f"Graph of true and calculated $\omega$ (run={i})")
+    ax.title.set_text(f"Graph of true and calculated $\Omega$ (run={i})")
 
     ax.set_ylim([-1, 18])
 
     data_int = pd.DataFrame.copy(data[i])
-    ax.scatter(data_int["time"], data_int["omega"], c="C1", label=f"$\omega$")
+    ax.scatter(data_int["time"], data_int["omega"], c="C1", label=f"$\Omega$")
     ax.set_xlabel("time [s]")
-    ax.set_ylabel(f"$\omega$ [rad / s]")
+    ax.set_ylabel(f"$\Omega$ [rad / s]")
 
 
-    ax.errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5, label=f"$\omega_{{res}}$")
+    ax.errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5, label=f"$\Omega_{{res}}$")
     ax.set_xlabel("time [s]")
-    ax.set_ylabel(f"$\omega_{{res}}$ [rad / s]")
+    ax.set_ylabel(f"$\Omega_{{res}}$ [rad / s]")
 
     plt.legend()
     plt.grid()
@@ -246,10 +246,10 @@ if __name__ == "__main__":
         print(i, I0)
         print(median_absolute_percentage_error(runs, i))
 
-        # plot_run_res(runs, i)
-        # with open(f"results/precision{i}.txt", "w") as f:
-        #     f.write(f"Curve evaluated precision is {median_absolute_percentage_error(runs, i)} %\n")
-        #     f.write(f"Calculated I0 = {I0}\n")
+        plot_run_res(runs, i)
+        with open(f"results/precision{i}.txt", "w") as f:
+            f.write(f"Curve evaluated precision is {median_absolute_percentage_error(runs, i)} %\n")
+            f.write(f"Calculated I0 = {I0}\n")
 
     for i in [14, 15, 17, 23]:
         plot_omega_on_omega(runs, i)
