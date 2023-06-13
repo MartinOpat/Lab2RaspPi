@@ -257,6 +257,6 @@ if __name__ == "__main__":
             f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
             f.write(f"Weighted mean squared error is {weighted_rms_error(runs, i)} [rad /s]\n")
 
-    for i in [14, 15, 17, 23]:
+    for i in [2]:
         plot_omega_on_omega(runs, i)
 
