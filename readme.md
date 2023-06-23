@@ -2,7 +2,8 @@
 - This repository contains all relevant code that was necessary to successfully setup, 
 run and process.
 
-- More detailed description of the experiment can be found [here](https://www.overleaf.com/read/ztjhhqszvwpp) .
+- More detailed description of the experiment can be found [here](https://www.overleaf.com/read/ztjhhqszvwpp), or in the `report.pdf`
+file.
 
 
 ## Light Sensor Code
