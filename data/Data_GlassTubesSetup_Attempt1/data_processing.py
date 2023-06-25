@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib
 import scipy
 from scipy.optimize import curve_fit
-matplotlib.rcParams.update({'font.size': 20})
+matplotlib.rcParams.update({'font.size': 30})
 
 
 header = "now,intensity,humidity,temperature,temperature_from_humidity," + \
@@ -197,14 +197,15 @@ def calculate_I0(data, i):
 
 def plot_omega_on_omega(data, i):
     fig, ax = plt.subplots(1, 1, figsize=(12, 12))
-    ax.title.set_text(f"Graph of true and calculated $\Omega$ (run={i}) - acrylic tubes")
+    ax.title.set_text(f"Graph of true and calculated \n$\Omega$ (run={i}) - acrylic tubes")
 
     ax.set_ylim([-1, 18])
+    ax.tick_params(axis='both', which='major', labelsize=30)
 
     data_int = pd.DataFrame.copy(data[i])
     ax.scatter(data_int["time"], data_int["omega"], c="C1", label=f"$\Omega$")
-    ax.set_xlabel("time [s]")
-    ax.set_ylabel(f"$\Omega$ [rad / s]")
+    ax.set_xlabel("time [s]", fontsize=30)
+    ax.set_ylabel(f"$\Omega$ [rad / s]", fontsize=30)
 
 
     ax.errorbar(data[i]["time"], data[i]["omega_res"], yerr=data[i]["omega_res_err"], fmt="o", capsize=5, label=f"$\Omega_{{res}}$")
@@ -253,10 +254,10 @@ if __name__ == "__main__":
         print(i, I0)
         print(median_absolute_percentage_error(runs, i))
 
-        plot_run_res(runs, i)
-        with open(f"results/precision{i}.txt", "w") as f:
-            f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
-            f.write(f"Weighted mean squared error is {weighted_rms_error(runs, i)} [rad /s]\n")
+        # plot_run_res(runs, i)
+        # with open(f"results/precision{i}.txt", "w") as f:
+        #     f.write(f"Median absolute perc. err. is {median_absolute_percentage_error(runs, i)} %\n")
+        #     f.write(f"Weighted mean squared error is {weighted_rms_error(runs, i)} [rad /s]\n")
 
     for i in [4, 5, 7, 10]:
         plot_omega_on_omega(runs, i)
